@@ -1,0 +1,6 @@
+start /(?i)\bCount of tests -> /
+start /(?i)\(\d+\)Failed tests array /
+
+ok /(?i)\[+\] Success -> /
+
+error /(?i)\[-\] Failed -> /

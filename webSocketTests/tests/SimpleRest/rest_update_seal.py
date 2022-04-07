@@ -1,0 +1,19 @@
+
+import sys
+sys.path.append('../../imports/')
+from debug import *
+
+import logging
+from getter import getFromConfig
+from waiter import *
+from messages import *
+import allure
+
+@allure.title("No login is_loggin_in method check")
+def test_start(debugLevel):
+    debugEnable(int(debugLevel))
+    link = "/rest/account/update_seal"
+    host = getFromConfig("host")
+    logging.info("Trying -> " + link)
+    request = waitGetResponseToBeChanged("http://" + host + link, "data").split('"message":"')[1].split('"')[0]
+    assert request in messages.noLoginBadAnswers, "Something went wrong with this link ->" + link
