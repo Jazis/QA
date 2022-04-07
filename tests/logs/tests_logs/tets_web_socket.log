@@ -1,0 +1,38 @@
+
+tets_web_socket.py::test_workWithDevices[394f5d68031be3bc2452717ef0913633qweDelimqwe1649255440qweDelimqweroot] qa-lnx-6
+
+-------------------------------- live log call ---------------------------------
+INFO     root:waiter.py:8 Waiting websocket response...
+INFO     root:waiter.py:8 Waiting websocket response...
+INFO     root:connect.py:41 Authorization was successful
+INFO     root:tets_web_socket.py:44 Starting main functions
+INFO     root:waiter.py:8 Waiting websocket response...
+INFO     root:waiter.py:8 Waiting websocket response...
+device=Devices::Computers::Linux
+ip=qa-lnx-6
+community=public
+enable-disk-io=false
+enable-disks-changes=false
+split-cpu-by-units=false
+enable-hardware-changes=false
+
+enable-process-changes=false
+
+enable-software-changes=false
+
+enable-arp-changes=false
+
+enable-network-changes=false
+
+enable-icmp-changes=false
+
+enable-tcp-changes=false
+
+enable-udp-changes=false
+
+replicated=false
+[48,2587343106998326,{"receive_progress":true},"api.konfigd.set",["3efe5182-0f28-ca6b-aa40-0737e8f1409b","exec konfne --device Devices::Computers::Linux  --tag \"ip=qa-lnx-6\" --tag \"community=public\"  --fetchname --tag \"enable-disk-io=false\" --tag \"enable-disks-changes=false\" --tag \"split-cpu-by-units=false\" --tag \"enable-hardware-changes=false\" --tag \"enable-process-changes=false\" --tag \"enable-software-changes=false\" --tag \"enable-arp-changes=false\" --tag \"enable-network-changes=false\" --tag \"enable-icmp-changes=false\" --tag \"enable-tcp-changes=false\" --tag \"enable-udp-changes=false\" --tag \"replicated=false\"  add /Tree/qa_lnx_6 --json"],{}]
+INFO     root:waiter.py:8 Waiting websocket response...
+PASSED
+
+============================== 1 passed in 1.54s ===============================

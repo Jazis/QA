@@ -1,0 +1,12 @@
+
+processViewCheck.py::test_processCheck[f71b0a5a6de699bbb6e6718005438292qweDelimqwe1649237540qweDelimqweroot] 
+-------------------------------- live log call ---------------------------------
+INFO     root:waiter.py:8 Waiting websocket response...
+INFO     root:waiter.py:8 Waiting websocket response...
+INFO     root:connect.py:41 Authorization was successful
+INFO     root:waiter.py:8 Waiting websocket response...
+INFO     root:processViewCheck.py:17 api.konfigd.auth going successfully
+INFO     root:processViewCheck.py:49 Success! All 48 processes are visible
+PASSED
+
+============================== 1 passed in 0.26s ===============================

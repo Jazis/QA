@@ -1,0 +1,53 @@
+
+No_Login_rest_device_target_views.py::test_start[0] 
+-------------------------------- live log call ---------------------------------
+INFO     root:No_Login_rest_device_target_views.py:16 Trying -> /rest/device/target_views
+INFO     root:waiter.py:26 Waiting rest response to be changed...
+INFO     root:waiter.py:26 Waiting rest response to be changed...
+INFO     root:waiter.py:26 Waiting rest response to be changed...
+FAILED
+
+=================================== FAILURES ===================================
+________________________________ test_start[0] _________________________________
+
+debugLevel = '0'
+
+    @allure.title("No login _rest_device_target_views method check")
+    def test_start(debugLevel):
+        debugEnable(int(debugLevel))
+        link = "/rest/device/target_views"
+        host = getFromConfig("host")
+        logging.info("Trying -> " + link)
+        request0 = waitGetResponseToBeChanged("http://" + host + link, "data")
+        try:
+>           request = waitGetResponseToBeChanged("http://" + host + link, "data").split('"message":"')[1].split('"')[0]
+E           IndexError: list index out of range
+
+No_Login_rest_device_target_views.py:19: IndexError
+
+During handling of the above exception, another exception occurred:
+
+debugLevel = '0'
+
+    @allure.title("No login _rest_device_target_views method check")
+    def test_start(debugLevel):
+        debugEnable(int(debugLevel))
+        link = "/rest/device/target_views"
+        host = getFromConfig("host")
+        logging.info("Trying -> " + link)
+        request0 = waitGetResponseToBeChanged("http://" + host + link, "data")
+        try:
+            request = waitGetResponseToBeChanged("http://" + host + link, "data").split('"message":"')[1].split('"')[0]
+        except:
+>           request = waitGetResponseToBeChanged("http://" + host + link, "data").split('"message": "')[1].split('"')[0]
+E           IndexError: list index out of range
+
+No_Login_rest_device_target_views.py:21: IndexError
+------------------------------ Captured log call -------------------------------
+INFO     root:No_Login_rest_device_target_views.py:16 Trying -> /rest/device/target_views
+INFO     root:waiter.py:26 Waiting rest response to be changed...
+INFO     root:waiter.py:26 Waiting rest response to be changed...
+INFO     root:waiter.py:26 Waiting rest response to be changed...
+=========================== short test summary info ============================
+FAILED No_Login_rest_device_target_views.py::test_start[0] - IndexError: list...
+========================= 1 failed in 69.53s (0:01:09) =========================
