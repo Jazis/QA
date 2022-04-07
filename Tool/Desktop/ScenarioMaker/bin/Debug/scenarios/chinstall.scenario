@@ -1,0 +1,58 @@
+<description>
+
+</description>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>sudo yum remove clickhouse-common-static -y </parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>sudo rm -r /etc/clickhouse-server/</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>sudo rm -r /etc/systemd/system/multi-user.target.wants/clickhouse-server.service </parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>sudo rm -r /usr/bin/clickhouse-*</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>sudo rm -r /var/lib/clickhouse/*</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>sudo rm -r /var/lib/clickhouse</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>sudo rm -r /var/log/clickhouse-server</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>rpm -i clickhouse-common-static-22.2.2.1-2.x86_64.rpm </parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>rpm -i clickhouse-server-22.2.2.1-2.noarch.rpm</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>echo 'never' | sudo tee /sys/kernel/mm/transparent_hugepage/enabled</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>echo 1 | sudo tee /proc/sys/vm/overcommit_memory</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>sudo clickhouse start</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>sudo clickhouse stop</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>wget -O /etc/clickhouse-server/config.xml http://host/configs/config.xml</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>wget -O /etc/clickhouse-server/users.xml http://host/configs/users.xml</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>sudo clickhouse start</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>clickhouse client --query 'create database if not exists lanlot_alerts on cluster lanlot_alerts;'</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>clickhouse client --query 'create database if not exists lanlot on cluster lanlot;'</parameters>
+

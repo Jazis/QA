@@ -1,0 +1,24 @@
+<id>1</id>
+	<action>Manual</action>
+	<parameters>mkdir /root/_modules/</parameters>
+<id>2</id>
+	<action>Manual</action>
+	<parameters>wget -O /root/_modules/product-python3-3.6.15-1.el7.x86_64.rpm https://repoDomain/repository/Third-Party_YUM-RedOS/x86_64/product-python3-3.6.15-1.el7.x86_64.rpm</parameters>
+<id>3</id>
+	<action>Manual</action>
+	<parameters>wget -O /root/_modules/product-monitoring-7-9.202207061339.a335b076a.el7.x86_64.rpm https://repoDomain/repository/Monitoring/package-monitoring-7-9.202207061339.a335b076a.el7.x86_64.rpm --connect-timeout=600</parameters>
+<id>4</id>
+	<action>Manual</action>
+	<parameters>rpm -ivv /root/_modules/product-python3-3.6.15-1.el7.x86_64.rpm > /dev/null 2>&1</parameters>
+<id>5</id>
+	<action>Manual</action>
+	<parameters>rpm -ivv /root/_modules/product-monitoring-7-9.202207061339.a335b076a.el7.x86_64.rpm > /dev/null 2>&1</parameters>
+<id>6</id>
+	<action>Manual</action>
+	<parameters>yum -y -v install product-web*</parameters>
+<id>7</id>
+	<action>Get license</action>
+	<parameters>-</parameters>
+<id>8</id>
+	<action>Manual</action>
+	<parameters>sudo systemctl restart productd</parameters>

@@ -1,0 +1,66 @@
+<description>
+
+</description>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>wget -O /root/_modules/product-monitoring--last-version https://repoDomain/repository/Monitoring_YUM-RedOS/master/product-monitoring--last-version</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>rpm -i /root/_modules/product-monitoring-*</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>wget -O /root/_modules/product-web--last-version https://repoDomain/repository/Web_YUM-RedOS/master/product-web--last-version</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>rpm -i /root/_modules/product-web-*</parameters>
+<id>*</id>
+	<action>Get license</action>
+	<parameters>-</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>systemctl restart productd</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>mkdir /usr/local/lanlot/conf/ds_{alert,meta,writer,reader,manager}.d</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>wget -O /etc/clickhouse-client/config.xml http://host/configs/config_client.xml</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>wget -O /usr/local/lanlot/conf/ds_alert.json http://host/configs/ds_alert.json</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>wget -O /usr/local/lanlot/conf/ds_meta.json http://host/configs/ds_meta.json</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>wget -O /usr/local/lanlot/conf/ds_writer.json http://host/configs/ds_writer.json</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>wget -O /usr/local/lanlot/conf/ds_reader.json http://host/configs/ds_reader.json</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>wget -O /usr/local/lanlot/conf/ds_manager.json http://host/configs/ds_manager.json</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>wget -O /usr/local/lanlot/conf/clickhouse_lanlot_alerts.d/00-python.json-patch http://host/configs/00-python.json-patch</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>wget -O /usr/local/lanlot/conf/clickhouse_lanlot_alerts.d/00-perl.json-patch http://host/configs/00-perl.json-patch</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>su - avalon -c "/usr/local/lanlot/util/configAlertsBackend.py --backend clickhouse"</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>su - avalon -c "/usr/local/lanlot/util/configTimeSeriesScripts.py --fix-dataserver-config /etc/clickhouse-server/config.xml -b clickhouse"</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>su - avalon -c "/usr/local/lanlot/util/configTimeSeriesScripts.py --backend clickhouse"</parameters>
+<id>19</id>
+	<action>Manual</action>
+	<parameters>su - avalon -c "overlord.pl modify ds-alert clickhouse-cluster=lanlot_alerts"</parameters>
+<id>20</id>
+	<action>Manual</action>
+	<parameters>su - avalon -c "overlord.pl enable ds-alert ds-alertlrd ds-manager ds-writer ds-reader"</parameters>
+<id>21</id>
+	<action>Manual</action>
+	<parameters>su - avalon -c "overlord.pl restart"</parameters>

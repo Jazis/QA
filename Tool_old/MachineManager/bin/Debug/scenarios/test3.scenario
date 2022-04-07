@@ -1,0 +1,21 @@
+<id>1</id>
+	<action>  Move  </action>
+	<parameters>123</parameters>
+<id>2</id>
+	<action>  Move  </action>
+	<parameters>123</parameters>
+<id>3</id>
+	<action>  Move  </action>
+	<parameters>123</parameters>
+<id>4</id>
+	<action>  Move  </action>
+	<parameters>123</parameters>
+<id>5</id>
+	<action>  Move  </action>
+	<parameters>123</parameters>
+<id>6</id>
+	<action> Wget </action>
+	<parameters>line.Replace("-",string.Empty)</parameters>
+<id>7</id>
+	<action> Wget </action>
+	<parameters>line.Replace("-",string.Empty)',,,</parameters>

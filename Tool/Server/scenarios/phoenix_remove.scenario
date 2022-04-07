@@ -1,0 +1,59 @@
+<description>
+Remove all phoenix packages by yum
+Remove clickhouse
+Remove zookeeper
+</description>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>sudo yum remove clickhouse-common-static -y </parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>sudo rm -r /etc/clickhouse-server/</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>sudo rm -r /etc/systemd/system/multi-user.target.wants/clickhouse-server.service </parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>sudo rm -r /usr/bin/clickhouse-*</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>sudo rm -r /var/lib/clickhouse/*</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>sudo rm -r /var/lib/clickhouse</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>sudo rm -r /var/log/clickhouse-server</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>yum remove zookeeper</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>rm -r /opt/zookeeper/</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>rm -r /etc/zookeeper/</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>rm -r /var/log/zookeeper/</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>yum remove phoenixds-*</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>yum remove phoenixds</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>yum remove mysql -y</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>yum remove mariadb-connector-* -y</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>yum remove mongodb-org -y </parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>sudo rm -r /usr/local/lanlot*</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>sudo rm -r /usr/local/avalon</parameters>

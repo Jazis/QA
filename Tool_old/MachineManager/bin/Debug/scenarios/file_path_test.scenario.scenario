@@ -1,0 +1,9 @@
+<id>1</id>
+	<action>Manual</action>
+	<parameters>echo 1</parameters>
+<id>2</id>
+	<action>Manual</action>
+	<parameters>ls -l {lanlot_home}</parameters>
+<id>3</id>
+	<action>Manual</action>
+	<parameters>ls -l {bpm_home}</parameters>

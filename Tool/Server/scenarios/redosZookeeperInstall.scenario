@@ -1,0 +1,63 @@
+<description>
+
+</description>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>sudo yum-config-manager --add-repo https://downloads.apache.org/bigtop/stable/repos/centos-7/bigtop.repo</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>sudo yum install -y zookeeper</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>echo "[Unit]"                                              > zookeeper.service</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>echo "Description=Zookeeper"                              >> zookeeper.service</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>echo "After=syslog.target"                                >> zookeeper.service</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>echo "Before=clickhouse-server.service"                   >> zookeeper.service</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>echo "[Service]"                                          >> zookeeper.service</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>echo "SyslogIdentifier=zookeeper"                         >> zookeeper.service</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>echo "TimeoutStartSec=10min"                              >> zookeeper.service</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>echo "Type=forking"                                       >> zookeeper.service</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>echo "ExecStart=/usr/lib/zookeeper/bin/zkServer.sh start" >> zookeeper.service</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>echo "ExecStop=/usr/lib/zookeeper/bin/zkServer.sh stop"   >> zookeeper.service</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>echo "Restart=always"                                     >> zookeeper.service</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>echo "RestartSec=0s"                                      >> zookeeper.service</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>echo "[Install]"                                          >> zookeeper.service</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>echo "WantedBy=multi-user.target"                         >> zookeeper.service</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>sudo mv zookeeper.service /etc/systemd/system/</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>sudo chmod 664 /etc/systemd/system/zookeeper.service</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>systemctl enable zookeeper</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>systemctl start zookeeper</parameters>

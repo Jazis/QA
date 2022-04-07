@@ -1,0 +1,12 @@
+<description>
+
+</description>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>wget -O /root/_modules/phoenixds-bpm--last-version https://repoDomain/repository/PhoenixDS-BPM_YUM-RedOS/master/phoenixds-bpm--last-version</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>wget -O /root/_modules/product-bpm--last-version https://repoDomain/repository/BPM/package-bpm--last-version</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>wget -O /root/_modules/product-bpm--last-version https://repoDomain/repository/BPM_YUM-RedOS/package-bpm--last-version</parameters>

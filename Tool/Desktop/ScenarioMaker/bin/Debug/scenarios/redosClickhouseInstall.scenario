@@ -1,0 +1,30 @@
+<description>
+
+</description>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>sudo yum install yum-utils</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>sudo rpm --import https://repo.clickhouse.tech/CLICKHOUSE-KEY.GPG</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>sudo yum-config-manager --add-repo https://repo.clickhouse.tech/rpm/lts/x86_64</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>sudo yum install clickhouse-server clickhouse-client</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>systemctl enable clickhouse-server</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>systemctl start clickhouse-server</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>echo 'never' | sudo tee /sys/kernel/mm/transparent_hugepage/enabled</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>echo 1 | sudo tee /proc/sys/vm/overcommit_memory</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>systemctl restart clickhouse-server</parameters>

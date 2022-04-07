@@ -1,0 +1,78 @@
+<description>
+
+</description>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>wget -O /root/_modules/product-bpm--last-version https://repoDomain/repository/BPM_YUM-RedOS/package-bpm--last-version</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>rpm -i /root/_modules/product-bpm-*</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>mkdir /home/camunda</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>wget -O /home/camunda/camunda.zip https://downloads.camunda.cloud/release/camunda-bpm/tomcat/7.10/camunda-bpm-tomcat-7.10.0.zip</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>unzip /home/camunda/camunda.zip -d /home/camunda/</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>wget -O /home/camunda/server/apache-tomcat-9.0.12/conf/bpm-platform.xml http://host/configs/bpm-platform.xml</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>wget -O /home/camunda/server/apache-tomcat-9.0.12/conf/server.xml http://host/configs/server.xml</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>wget -O /home/camunda/server/apache-tomcat-9.0.12/conf/web.xml http://host/configs/web.xml</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>sudo rm -rf /home/avalon/server/apache*/webapps/camunda-invoice</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>su - avalon -c "mysql -uroot -planlot < /usr/local/bpm/support/product_camunda.sql"</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>su - avalon -c "mysql -uroot -planlot camundabpm < /home/camunda/sql/create/mysql_identity*.sql"</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>su - avalon -c "mysql -uroot -planlot camundabpm < /home/camunda/sql/create/mysql_engine*.sql"</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>su - avalon -c "mysql -uroot -planlot camundabpm < /usr/local/bpm/support/mysql_product.sql"</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>yum -y -v install java</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>wget -O /home/camunda/mysql-connector-java-8.0.15.zip http://ftp.iij.ad.jp/pub/db/mysql/Downloads/Connector-J/mysql-connector-java-8.0.15.zip</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>unzip mysql-connector-java-8.0.15.zip -d /home/camunda/mysql-connector/</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>sudo cp /home/camunda/mysql-connector/mysql-*/mysql-connector-java-8.0.15.jar /home/camunda/server/apache-tomcat*/lib/</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>sudo cp /usr/local/bpm/bpm/libs/auth-filter/target/zbpm-auth-filter* /home/camunda/server/apache-tomcat*/webapps/engine-rest/WEB-INF/lib/</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>sudo cp /usr/local/bpm/bpm/libs/auth-filter/target/alternateLocation/gson* /home/camunda/server/apache-tomcat*/webapps/engine-rest/WEB-INF/lib/</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>wget -O /usr/local/bpm/conf/bpm_camunda.json http://host/configs/bpm_camunda.json</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>wget -O /usr/local/bpm/conf/mysql_bpm_camunda.json http://host/configs/mysql_bpm_camunda.json</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>wget -O /home/camunda/server/apache-tomcat-9.0.12/conf/bpm-platform.xml http://host/configs/bpm-platform.xml</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>su - avalon -c "/usr/local/bpm/util/create_bpmuser.py"</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>su - avalon -c "overlord.pl restart rest"</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>systemctl restart bpm-app</parameters>

@@ -1,0 +1,9 @@
+<description>
+
+</description>
+<id>1</id>
+	<action>Kill process</action>
+	<parameters>rest_</parameters>
+<id>2</id>
+	<action>Manual</action>
+	<parameters>su - avalon -c "overlord.pl start rest"</parameters>

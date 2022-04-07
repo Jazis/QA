@@ -1,0 +1,6 @@
+<description>
+Install Mada. <host>/mada-manager/ui/
+</description>
+<id>*</id>
+  <action>Manual</action>
+  <parameters>dnf install -y phoenixds-analytics-mada-manager-embedded</parameters>

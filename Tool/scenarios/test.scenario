@@ -1,0 +1,12 @@
+<id>1</id>
+	<action>Manual</action>
+	<parameters>ls -l </parameters>
+<id>2</id>
+	<action>Manual</action>
+	<parameters>ls /home/</parameters>
+<id>3</id>
+	<action>Manual</action>
+	<parameters>ls /etc/</parameters>
+<id>4</id>
+	<action>Manual</action>
+	<parameters>whoami</parameters>

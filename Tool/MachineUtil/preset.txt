@@ -1,0 +1,10 @@
+*2*
+{host}=login@host:password
+{host}=login@host:password
+{host}=login@host:password
+{host}=login@host:password
+zookeeper_port=2181
+clickhouse_port=9000
+zookeeper_host=login
+main_host=login
+clickhouse_host=login

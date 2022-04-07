@@ -1,0 +1,6 @@
+[Web monitoring clickhouse zookeeper]localhost->zookeeperinstall.scenario;localhost->chinstall.scenario;localhost->redosMonitoringWeb.scenario;localhost->lil_fix.scenario;
+[Web monitoring clickhouse zookeeper custom]{host}->zookeeperinstall.scenario;{host}->chinstall.scenario;{host}->redosMonitoringWeb.scenario;{host}->lil_fix.scenario;
+[Test]{host}->remove0.scenario;
+[Lil test]test-machine-3->lil_fix.scenario
+[zookeeper]test-machine-3->zookeeperinstall.scenario;
+[test_zoo]test-machine-3->ttt.scenario

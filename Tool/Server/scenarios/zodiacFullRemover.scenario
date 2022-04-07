@@ -1,0 +1,33 @@
+<description>
+Remove all product modules and side files
+</description>
+<id>1</id>
+	<action>Manual</action>
+	<parameters>yum remove product-*</parameters>
+<id>2</id>
+	<action>Manual</action>
+	<parameters>rm -r /tmp/lanlot*</parameters>
+<id>3</id>
+	<action>Manual</action>
+	<parameters>rm -r /tmp/product*</parameters>
+<id>4</id>
+	<action>Manual</action>
+	<parameters>rm -r /tmp/configServer.stop</parameters>
+<id>5</id>
+	<action>Manual</action>
+	<parameters>rm -r /tmp/dataServer.stop</parameters>
+<id>6</id>
+	<action>Manual</action>
+	<parameters>rm -r /tmp/esbBroker.stop</parameters>
+<id>7</id>
+	<action>Manual</action>
+	<parameters>rm -r /usr/local/dms</parameters>
+<id>8</id>
+	<action>Manual</action>
+	<parameters>rm -r /usr/local/bpm</parameters>
+<id>9</id>
+	<action>Manual</action>
+	<parameters>rm -r /usr/local/lanlot-web</parameters>
+<id>10</id>
+	<action>Manual</action>
+	<parameters>rm -r /usr/local/lanlot</parameters>

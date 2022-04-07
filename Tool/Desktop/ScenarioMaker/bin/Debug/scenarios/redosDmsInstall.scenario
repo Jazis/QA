@@ -1,0 +1,18 @@
+<description>
+
+</description>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>wget -O /root/_modules/phoenixds-dms--last-version https://repoDomain/repository/PhoenixDS-DMS_YUM-RedOS/master/phoenixds-dms--last-version<install></parameters>
+<id>2</id>
+	<action>Manual</action>
+	<parameters>systemctl restart dms-app</parameters>
+<id>3</id>
+	<action>Manual</action>
+	<parameters>systemctl restart dms*</parameters>
+<id>4</id>
+	<action>Manual</action>
+	<parameters> yum install mongodb</parameters>
+<id>5</id>
+	<action>Manual</action>
+	<parameters>systemctl restart mongod</parameters>

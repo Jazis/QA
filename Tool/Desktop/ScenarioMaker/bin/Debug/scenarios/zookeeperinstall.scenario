@@ -1,0 +1,18 @@
+<description>
+
+</description>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>yum install zookeeper</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>yum install mongodb-org</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>wget -O /etc/zookeeper/zoo.cfg http://host/configs/zoo.cfg</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>systemctl enable zookeeper</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>systemctl start zookeeper</parameters>

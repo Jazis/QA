@@ -1,0 +1,9 @@
+<description>
+
+</description>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>wget -O /root/_modules/product-bpm--last-version https://repoDomain/repository/BPM_YUM-RedOS/package-bpm--last-version</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>rpm -i /root/_modules/product-bpm-*</parameters>

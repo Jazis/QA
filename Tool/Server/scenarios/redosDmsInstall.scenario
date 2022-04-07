@@ -1,0 +1,21 @@
+<description>
+
+</description>
+<id>*</id>
+	<action>Manual</action>
+	<parameters> dnf --allowerasing install mongodb-org -y</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>systemctl start mongod</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>wget -O /root/_modules/phoenixds-dms--last-version https://repoDomain/repository/PhoenixDS-DMS_YUM-RedOS/master/phoenixds-dms--last-version<install></parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>systemctl restart dms-app</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>systemctl restart dms*</parameters>
+<id>*</id>
+	<action>Manual</action>
+	<parameters>systemctl restart mongod</parameters>
