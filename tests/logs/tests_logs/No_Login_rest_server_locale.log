@@ -1,9 +1,0 @@
-
-No_Login_rest_server_locale.py::test_start[0] 
--------------------------------- live log call ---------------------------------
-INFO     root:No_Login_rest_server_locale.py:16 Trying -> /rest/server/locale
-INFO     root:waiter.py:26 Waiting rest response to be changed...
-INFO     root:waiter.py:26 Waiting rest response to be changed...
-PASSED
-
-============================== 1 passed in 0.32s ===============================

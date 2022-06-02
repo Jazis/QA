@@ -1,0 +1,19 @@
+## BPM Methods
+/api/bpm/camunda/engine<br/>
+/api/bpm/camunda/engine/default/user/root/profile<br/>
+/api/bpm/get_tasks<br/>
+/api/bpm/count_tasks<br/>
+/api/bpm/camunda/engine/default/process-instance/<scheme><br/>
+/api/bpm/camunda/engine/default/variable-instance<br/>
+/api/bpm/camunda/engine/default/task/<task><br/>
+/api/bpm/camunda/engine/default/user<br/>
+/api/bpm/get_comments<br/>
+/api/bpm/camunda/engine/default/identity/groups<br/>
+/api/bpm/engine/default/history/user-operation<br/>
+/api/bpm/camunda/engine/default/group<br/>
+/api/bpm/camunda/engine/default/process-definition<br/>
+/api/bpm/camunda/engine/default/process-definition/count<br/>
+/api/bpm/camunda/engine/default/task<br/>
+/api/bpm/history_get_tasks<br/>
+/api/bpm/history_count_tasks<br/>
+/api/bpm/camunda/engine/default/history/variable-instance<br/>
