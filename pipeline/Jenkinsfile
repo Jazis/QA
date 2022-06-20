@@ -1,0 +1,221 @@
+#!/usr/bin/env groovy
+
+// Plugin Dependencies:
+//   - [parameter-separator](https://plugins.jenkins.io/parameter-separator/);
+//   - [log-parser](https://plugins.jenkins.io/log-parser/);
+
+// Third Party Programs:
+//   - allure;
+//   - python3;
+
+// https://git.ad.pkcc-ps.ru/production/jenkins-shared-libraries/variable-control-library.git
+@Library('variable-control') _
+
+pipeline {
+	agent {
+		label 'py_lrtf_7'
+	}
+	environment {
+		ALLURE_OUTPUT_DIR = "${env.WORKSPACE}/allure"
+	}
+	options {
+		skipDefaultCheckout()
+		buildDiscarder(
+			logRotator(
+				daysToKeepStr: keepParam('DISCARDER_DAYS_TO_KEEP', '30'),
+				numToKeepStr: keepParam('DISCARDER_NUM_TO_KEEP'),
+			),
+		)
+	}
+	triggers {
+		upstream(
+			upstreamProjects: keepParam('UPSTREAM_PROJECTS'),
+			threshold: hudson.model.Result.SUCCESS,
+		)
+	}
+	parameters {
+		string(
+			name: 'CMD_ARGS',
+			defaultValue: keepParam(
+				'CMD_ARGS',
+				'-srt -db 1 -ll DEBUG -ot rest -r 1',
+			),
+			description: \
+				'#keeping<br>' \
+				+ 'The command line arguments for `main.py` script.',
+			trim: true,
+		)
+		text(
+			name: 'CONFIG',
+			defaultValue: keepParam('CONFIG'),
+			description: \
+				'#keeping<br>' \
+				+ 'Contents of `webSocketTests/config.ini`.',
+		)
+
+		separator(
+			name: '_BUILD_DISCARDER_SEP',
+			sectionHeader: 'Build Discarder',
+		)
+		string(
+			name: 'DISCARDER_DAYS_TO_KEEP',
+			defaultValue: keepParam('DISCARDER_DAYS_TO_KEEP'),
+			description: \
+				'#only-keeping<br>' \
+				+ 'Days to keep builds. If not empty, build records are only' \
+				+ ' kept up to this number of days.',
+			trim: true,
+		)
+		string(
+			name: 'DISCARDER_NUM_TO_KEEP',
+			defaultValue: keepParam('DISCARDER_NUM_TO_KEEP'),
+			description: \
+				'#only-keeping<br>' \
+				+ 'Max # of builds to keep. If not empty, only up to this' \
+				+ ' number of build records are kept.',
+			trim: true,
+		)
+
+		separator(
+			name: '_BUILD_SEP',
+		)
+		string(
+			name: 'UPSTREAM_PROJECTS',
+			defaultValue: keepParam('UPSTREAM_PROJECTS'),
+			description: \
+				'#only-keeping<br>' \
+				+ 'Accepts a comma-separated string of jobs. When any job in' \
+				+ ' the string finishes with `SUCCESS`, the Pipeline will be' \
+				+ ' re-triggered.',
+			trim: true,
+		)
+		booleanParam(
+			name: 'CLEAN_WORKSPACE',
+			defaultValue: keepParam('CLEAN_WORKSPACE', false),
+			description: \
+				'#keeping #only-user<br>' \
+				+ 'Clean the workspace before build.',
+		)
+		booleanParam(
+			name: 'KEEP_PARAMS',
+			defaultValue: false,
+			description: \
+				'Keep the current parameters values for future builds.',
+		)
+		booleanParam(
+			name: 'IS_LOAD_CONF_ONLY',
+			defaultValue: false,
+			description: \
+				'Update the `Pipeline` configuration in the `Jenkins` without' \
+				+ ' performing stages. It can be used to change a default' \
+				+ ' value of a parameter, for example.',
+		)
+	}
+	stages {
+		stage('Preparation') {
+			when {
+				allOf {
+					not { equals actual: currentBuild.number, expected: 1 }
+					equals actual: params.IS_LOAD_CONF_ONLY, expected: false
+				}
+			}
+			steps {
+				sh 'env'
+				script {
+					def userIdCause = \
+						currentBuild.getBuildCauses(
+							'hudson.model.Cause$UserIdCause',
+						)
+					if (
+							// Pipeline was triggered not by user.
+							userIdCause.isEmpty()
+							|| params.CLEAN_WORKSPACE
+					) {
+						cleanWs()
+					} else {
+						dir(env.ALLURE_OUTPUT_DIR) {
+							deleteDir()
+						}
+					}
+				}
+				dir('src') {
+					checkout scm
+					script {
+						if (params.CONFIG) {
+							writeFile(
+								file: 'webSocketTests/config.ini',
+								text: params.CONFIG,
+								encoding: 'UTF-8',
+							)
+						}
+					}
+				}
+				sh '''
+					python3 -m venv .venv
+					. .venv/bin/activate
+					pip3 install \
+						-i https://nexus.ad.pkcc-ps.ru/repository/pypi/simple \
+						-r src/webSocketTests/requirements.txt \
+				'''
+			}
+		}
+		stage('Testing') {
+			when {
+				allOf {
+					not { equals actual: currentBuild.number, expected: 1 }
+					equals actual: params.IS_LOAD_CONF_ONLY, expected: false
+				}
+			}
+			environment {
+				ALLURE_RESULT_SUBDIR = 'result'
+				ALLURE_RESULT_DIR = \
+					"${env.ALLURE_OUTPUT_DIR}/${env.ALLURE_RESULT_SUBDIR}"
+				ALLURE_LOGS_SUBDIR = 'logs'
+				ALLURE_LOGS_DIR = \
+					"${env.ALLURE_OUTPUT_DIR}/${env.ALLURE_LOGS_SUBDIR}"
+			}
+			steps {
+				sh """mkdir -p \
+					'${env.ALLURE_RESULT_DIR}' \
+					'${env.ALLURE_LOGS_DIR}' \
+				"""
+				dir('src/webSocketTests') {
+					// HACK The slash after `env.ALLURE_LOGS_DIR` is mandatory,
+					// otherwise the logs will be saved to parent directory.
+					// This is the behavior of the script `main.py`.
+					sh """
+						. ${env.WORKSPACE}/.venv/bin/activate
+						python3 main.py \
+							--allure-output-dir '${env.ALLURE_RESULT_DIR}' \
+							--simple-logs-output-dir '${env.ALLURE_LOGS_DIR}/' \
+							${params.CMD_ARGS}
+					"""
+				}
+			}
+			post {
+				always {
+					dir(env.ALLURE_OUTPUT_DIR) {
+						allure([
+							report: "report",
+							results: [[path: env.ALLURE_RESULT_SUBDIR]],
+						])
+						archiveArtifacts(
+							artifacts: "${env.ALLURE_LOGS_SUBDIR}/*",
+							fingerprint: true,
+						)
+					}
+					dir(env.ALLURE_OUTPUT_DIR) {
+						deleteDir()
+					}
+					logParser(
+						useProjectRule: true,
+						projectRulePath: 'src/pipeline/parsingRules.logParser',
+						parsingRulesPath: '',
+						unstableOnWarning: true,
+						failBuildOnError: true,
+					)
+				}
+			}
+		}
+	}
+}

@@ -30,10 +30,14 @@ def createAccount(seal, host, username):
     }   
     logging.info("Try to create new test account")
     createAccountRequest = requests.post(f"http://{host}/rest/access/useradd", data = data, timeout=10).text
-    assert 'data":[' in createAccountRequest and ']' in createAccountRequest, "Something wrong with create account"
-    temp.userId = createAccountRequest.split('data":["')[1].split('"]')[0]
-    logging.info("Account created and take id -> " + temp.userId)
-
+    try:
+        assert 'data":[' in createAccountRequest and ']' in createAccountRequest, "Something wrong with create account"
+        temp.userId = createAccountRequest.split('data":["')[1].split('"]')[0]
+        logging.info("Account created and take id -> " + temp.userId)
+    except:
+        if 'Already exists' in createAccountRequest:
+            assert 'Already exists' in createAccountRequest, "Someting went wrong with createAccountRequest output"
+            logging.error("Username already exist")
 def tryLoginNewAccount(host):
     data = {
         "login" : temp.login,

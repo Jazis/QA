@@ -11,22 +11,10 @@ import allure
 
 @allure.step('Checking project processes')
 def processCheck(ws, seal, authId):
-    ws.send('[48,1622279444960334,{},"api.konfigd.auth",["f0369b56-ad01-e919-dfe6-9f0589d147f6","{\\"username\\":\\"'+ authId +'\\",\\"seal\\":\\"'+ seal +'\\"}"],{}]')
-    message = waitResponse(ws)
-    assert 'f0369b56-ad01-e919-dfe6-9f0589d147f6' in message, "Something wrong with api.konfigd.auth."
+    waitForResponse(ws, '[48,1622279444960334,{},"api.konfigd.auth",["f0369b56-ad01-e919-dfe6-9f0589d147f6","{\\"username\\":\\"'+ authId +'\\",\\"seal\\":\\"'+ seal +'\\"}"],{}]', True, 10, 2)
     logging.info('api.konfigd.auth going successfully') 
-    ws.send('[48,4525279033177098,{"receive_progress":false},"api.konfigd.get",["2bb76118-6ef9-a6d6-cb97-bd1dce2ad2d6","exec overlord.pl ping --json"],{}]')
-    counter = 0
-    while counter<=10: 
-        messages = ws.recv()
-        if ("2bb76118-6ef9-a6d6-cb97-bd1dce2ad2d6" in messages):
-            break
-        else:
-            time.sleep(1)
-            counter += 1
-    assert "2bb76118-6ef9-a6d6-cb97-bd1dce2ad2d6" in messages, "Something wront with response message in websocket get process."
-    ws.close()
-    return messages
+    message = waitForResponse(ws, '[48,4525279033177098,{"receive_progress":false},"api.konfigd.get",["2bb76118-6ef9-a6d6-cb97-bd1dce2ad2d6","exec overlord.pl ping --json"],{}]', True, 10, 2)
+    return message
 
 # @allure.feature(' The name of the function ')
 # @allure.story(' Subfunction name ')
@@ -39,6 +27,7 @@ def test_processCheck(seal):
     seal = data[1]
     authId = data[2]
     dataFormat(processCheck(ws,seal,authId))
+    ws.close()
 
 @allure.step('Searching processes in response body')
 def dataFormat(data):

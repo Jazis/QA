@@ -100,12 +100,19 @@ python3 main.py
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`-ll,--log-level` DEBUG|INFO|OFF - стандартные уровни лога от pytest\
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	Изначально тесты запускаются с параметром INFO\
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`-t,--timeout` [default 0.2 sec] - задержка для запусков теста (в локальной сети корректировать ее, а не параметр -th,--threads, так как один поток успевает запускать все тесты, даже со значением 0)\
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`-r,--r` [times] - перезапускает FAILED тесты, необходимо указать количество кругов перезапуска\
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`-r,--repeat` [times] - перезапускает FAILED тесты, необходимо указать количество кругов перезапуска\
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`-th,--threads` [default 4] - установка количества потоков для запуска тестов\
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`-db.--debug-level 1` - включения дебага для request в тестах\
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`-db,--debug-level` [1] - включения дебага для request в тестах\
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--pk --process-killing` [default 180] - кастомная установка таймера на время выполнения теста\
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--no-ssl` (demo) - отключает использование серфтификата при запуске теста\
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--ssl` (demo) - включает использование серфтификата при запуске теста, если ранее оно было отключено\
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`-gen, --generate` - генератор конфигураций для девайсов, использует device.ini\
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--hash` - используется для передачи хеша билда, для сортировки выходных логов в папки с наименованием в виде этого хеша\
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`-sr, --start-reconnect-times` [times] - установка количества попыток получения seal сессии\
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`-sr-time, --start-reconnect-timeout` [sec] - установка задержки между попытками получения seal сессии\
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--allure-output-dir` [dir] - позволяет сменить папку для сохраняемых логов allure\
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--simple-logs-output-dir` [dir] - позволяет сменить папку для сохраняемых логов вывода консоли\
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`--delete-logs` - чистка логов\
 &nbsp;&nbsp;&nbsp;	Добавляет в файл теста подключение необходимой библиотеки из "../imports/debug.py" и функцию с включением дебага в тест(если ранее в тесте небыло предусмотренно использование дебага). \
 &nbsp;&nbsp;&nbsp;	Необходимость иметь в тесте функцию - содержащую в своем наименовании приставку "test_". Дополнит параметры функции, при необходимости.\
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;`-wst,--webSocketTests` - запуск только WebSocket тестов из папки "tests/WebSocket"\

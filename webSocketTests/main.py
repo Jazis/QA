@@ -1,13 +1,18 @@
+from concurrent.futures import thread
 import subprocess
 import os
 import sys
+from unicodedata import name
 from imports.waiter import *
 from imports.getter import *
+from imports.waiter import waitResponse
 from websocket import *
 import time
 import threading
 import urllib3
 import random
+import requests
+import logging
 
 class temp():
     scriptsCount = 0
@@ -42,28 +47,33 @@ def testsConters():
 def banner():
     testsConters()
     banner = print(f"""
-    ----------------------------------------------------------------------------------
-   | -s          --skip [filename].py or bpm,dms      | Skip one test                 |
-   | -h          --help                               | This message                  |
-   | -ot         --only-this [filename].py or bpm,dms | Only one test                 |
-   | -ll         --log-level DEBUG|INFO|OFF           | Log level                     |
-   | -t          --timeout [default 0.2 sec]          | Timeout between tests         |
-   | -r          --repeat [times]                     | Failed tests repeater         |
-   | -th         --threads [default 4]                | Set threads                   |
-   | -db         --debug-level 1                      | Turn on debug                 |
-   | --no-ssl    (demo)                               | Turn off ssl                  |
-   | --ssl       (demo)                               | Turn on ssl                   |
-   | -gen        --generate                           | (device.ini) Data generation  |
-   |             --hash                               | Build hash for saving results |
-   |             --allure-output-dir [dir]            | Set allure output directory   |
-   |             --simple-logs-output-dir [dir]       | Set simple output directory   |
-   |                                                                                  |
-   | -wst        --webSocketTests                     | Run only WS tests             |
-   | -srt        --simpleRestTests                    | Run only REST tests           |
-   |                                                                                  |
-   | Scripts count : {temp.scriptsCount}                      
-   | Scripts start with : --log-cli-level=INFO (default)                              |
-    ----------------------------------------------------------------------------------""")
+    -----------------------------------------------------------------------------------------------------------------------------
+   | -s          --skip [filename].py or bpm,dms               | Skip tests by group or single name test                         |
+   | -h          --help                                        | This message                                                    |
+   | -ot         --only-this [filename].py or bpm,dms          | Starting selected group of tests or single name tests           |
+   | -ll         --log-level DEBUG|INFO|OFF                    | Log level                                                       |
+   | -t          --timeout [default 0.2 sec]                   | Timeout between tests                                           |
+   | -r          --repeat [times]                              | Failed tests repeater                                           |
+   | -th         --threads [default 4]                         | Set threads                                                     |
+   | -db         --debug-level 1                               | Turn on debug                                                   |
+   | -pk         --process-killing [time] - 180sec default     | Timer for process killing (Use `off` for disable this function) |
+   | -sr         --start-reconnect-times [times] - 20 default  | Open new session reconnection times (taking seal)               |
+   | -sr-time    --start-reconnect-timeout [secs] - 1 default  | Timer open new session recconect                                |
+   | --no-ssl    (demo)                                        | Turn off ssl                                                    |
+   | --ssl       (demo)                                        | Turn on ssl                                                     |
+   | -gen        --generate                                    | (device.ini) Data generation                                    |
+   |             --hash                                        | Build hash for saving results                                   |
+   |             --allure-output-dir [dir]                     | Set allure output directory                                     |
+   |             --simple-logs-output-dir [dir]                | Set simple output directory                                     |
+   |             --delete-logs                                 | Delete all logs                                                 |
+   |             --waiting-for-response - 40 default           | Main responses timeout                                          |
+   
+   | -wst        --webSocketTests                              | Run only WS tests                                               |
+   | -srt        --simpleRestTests                             | Run only REST tests                                             |
+   |                                                                                                                             |
+   | Scripts count : {temp.scriptsCount}                                                            
+   | Scripts start with : --log-cli-level=INFO (default)                                                                         |
+    -----------------------------------------------------------------------------------------------------------------------------""")
     return banner
 
 def reRunTests(failedTestsRunLoop):
@@ -254,6 +264,19 @@ def makeDeviceIniGreateAgain():
             nline =  line[:len(line)-2]
             open("new_device.ini", "a+").write(nline + "]\n") 
 
+def logsDeleting():
+    counter0 = 0
+    counter1 = 0
+    for file in os.listdir(allureLogsFolderPath):
+        print("[DELETED] " + allureLogsFolderPath + file)
+        os.system("yes | rm -r " + allureLogsFolderPath + file + " > /dev/null 2>&1")
+        counter0 +=1
+    for file in os.listdir(logsFolderPath):
+        print("[DELETED] " + logsFolderPath + file)
+        os.system("yes | rm -r " + logsFolderPath + file)
+        counter1 += 1
+    print(f"Deleted files -> [{counter0 + counter1}]; Allure logs ->[{counter0}]; Simple logs -> [{counter1}]")
+    
 skippedFiles = []
 skipWays = []
 onlyWayFiles = []
@@ -261,12 +284,17 @@ onlyThisWays = []
 repeatIndex=0
 debuglevelIndex = 0
 debuglevel = 0
+startReconTimes = 40
+startReconTimesTimeout = 1
 onlyIndex = 0
 skipIndex = 0
 noSslIndex = 0
+processKillingTime = 30
 logLevelIndex = 0
 timeoutInSec = 0.2
+waitForResponseTimeout = 40
 threadsCount = 4 
+
 argument = sys.argv
 desicion = []
 if "-h" in argument or "--help" in argument:
@@ -290,6 +318,12 @@ if "-ll" in argument or "--log-level" in argument:
     logLevelIndex = argument.index(argumetsIndexSearch(["-ll", "--log-level"]))
 if "-t" in argument or "--timeout" in argument:
     timeoutInSec = sys.argv[argument.index(argumetsIndexSearch(["-t", "--timeout"])) + 1]
+if "--waiting-for-response" in argument:
+    waitForResponseTimeout = sys.argv[argument.index(argumetsIndexSearch(["--waiting-for-response"])) + 1]
+if "-sr" in argument or "--start-reconnect-times" in argument:
+    startReconTimes = sys.argv[argument.index(argumetsIndexSearch(["-sr", "--start-reconnect-times"])) + 1] 
+if "-sr-time" in argument or "--start-reconnect-timeout" in argument:
+    startReconTimesTimeout = sys.argv[argument.index(argumetsIndexSearch(["-sr-time", "--start-reconnect-timeout"])) + 1]    
 if "-r" in argument or "--repeat" in argument:
     repeatIndex = sys.argv[argument.index(argumetsIndexSearch(["-r", "--repeat"])) + 1] 
 if "-wst" in argument or "--webSocketTests" in argument:
@@ -305,6 +339,10 @@ if "--allure-output-dir" in argument:
     allureLogsFolderPath = sys.argv[argument.index(argumetsIndexSearch(["--allure-output-dir"])) + 1]
 if "--simple-logs-output-dir" in argument:
     logsFolderPath = sys.argv[argument.index(argumetsIndexSearch(["--simple-logs-output-dir"])) + 1]
+if "-pk" in argument or "--process-killing" in argument:
+    processKillingTime = sys.argv[argument.index(argumetsIndexSearch(["-pk", "--process-killing"])) + 1]
+    if processKillingTime == "off":
+        processKillingTime = 0
 if "-db" in argument or "--debug-level" in argument:
     print(str(sys.argv))
     debuglevel = sys.argv[argument.index(argumetsIndexSearch(["-db", "--debug-level"])) + 1]
@@ -314,7 +352,32 @@ if "--no-ssl" in argument or "--ssl" in argument:
 if "-gen" in argument or "--generate" in argument:
     makeDeviceIniGreateAgain()
     sys.exit()
+if "--delete-logs" in argument:
+    logsDeleting()
+    sys.exit()
 
+if allureLogsFolderPath[-1] != "/":
+    allureLogsFolderPath = allureLogsFolderPath + "/"
+if logsFolderPath[-1] != "/":
+    logsFolderPath = logsFolderPath + "/"
+
+
+def reconFunnction(url, data, timeout, verify = None, cert = None):
+    i = 0 
+    while i < startReconTimes:
+        try:
+            if verify == None and cert == None:
+                postReqForAuth = requests.post(url, data = data, timeout=timeout).text
+                return postReqForAuth
+            else:
+                postReqForAuth = requests.post(url, data = data, timeout=timeout, verify=False, cert=None).text
+                return postReqForAuth
+        except Exception as e:
+            time.sleep(startReconTimesTimeout)
+            pass
+        i += 1
+    return print("[FAILED] " + e)
+            
 
 def restAuth(_is_this_websocket = 0):
     if _is_this_websocket == 0:
@@ -327,7 +390,7 @@ def restAuth(_is_this_websocket = 0):
             if "[host]" in line:
                 temp.host = line.split(" = ")[1]
             if "[subprotocols]" in line:
-                temp.subprotocols = line.split(" = ")[1]    
+                temp.subprotocols = line.split(" = ")[1].replace("[", "").replace("]", "").replace("\"", "")
             if "[authId]" in line:
                 temp.authID = line.split(" = ")[1]
             if "[login]" in line:
@@ -341,20 +404,27 @@ def restAuth(_is_this_websocket = 0):
         "password" : temp.password
     }
     urllib3.disable_warnings()
-    if "--no-ssl" in argument[noSslIndex]:
-        postReqForAuth = requests.post("https://" + temp.host + "/rest/account/login", data = data, timeout=20, verify=False, cert=None).text
-    else:
-        postReqForAuth = requests.post("http://" + temp.host + "/rest/account/login", data = data, timeout=20).text
+    try:
+        if "--no-ssl" in argument[noSslIndex]:
+            postReqForAuth = requests.post("https://" + temp.host + "/rest/account/login", data = data, timeout=waitForResponseTimeout, verify=False, cert=None).text
+        else:
+            postReqForAuth = requests.post("http://" + temp.host + "/rest/account/login", data = data, timeout=waitForResponseTimeout).text
+    except urllib3.exceptions.ReadTimeoutError:
+        if "--no-ssl" in argument[noSslIndex]:
+            postReqForAuth = reconFunnction("http://" + temp.host + "/rest/account/login", data = data, timeout=waitForResponseTimeout, verify=False, cert=None)
+        else:
+            postReqForAuth = reconFunnction("http://" + temp.host + "/rest/account/login", data = data, timeout=waitForResponseTimeout)
+        
     if "Service Unavailable" in postReqForAuth:
         logging.error("Service Unavailable, please, try again later")
         exit()
     assert "displayName" in postReqForAuth, "DisplayName not in post response. Something wrong with auth post respose."
     for i in range(len(postReqForAuth.split('\"'))):
         if postReqForAuth.split('\"')[i] == "seal":
-            temp.seal = postReqForAuth.split('\"')[i + 2]    
+            temp.seal = postReqForAuth.split('\"')[i + 2] 
 
 def webSocketAuth():
-    ws = create_connection(f"ws://{temp.host}/ws", subprotocols=["wamp.2.json"],timeout=10000)
+    ws = create_connection(f"ws://{temp.host}/ws", subprotocols=temp.subprotocols.split(),timeout=10000)
     ws.send('[1,"realm1",{"roles":{"caller":{"features":{"caller_identification":true,"progressive_call_results":true}},"callee":{"features":{"caller_identification":true,"pattern_based_registration":true,"shared_registration":true,"progressive_call_results":true,"registration_revocation":true}},"publisher":{"features":{"publisher_identification":true,"subscriber_blackwhite_listing":true,"publisher_exclusion":true}},"subscriber":{"features":{"publisher_identification":true,"pattern_based_subscription":true,"subscription_revocation":true}}},"authmethods":["ticket"],"authid":"' + str(temp.authID) + '"}]')
     assert '[4,"ticket",{}]' in ws.recv(), 'Something wrong with webSocket connection.'
     ws.send('[5,"' + temp.seal + '",{}]')
@@ -369,10 +439,8 @@ def interlayer():
     ws = wsData[0]
     seal = wsData[1]
     authId = wsData[2]
-    ws.send('[48,1622279444960334,{},"api.konfigd.auth",["f0369b56-ad01-e919-dfe6-9f0589d147f6","{\\"username\\":\\"'+ authId +'\\",\\"seal\\":\\"'+ seal +'\\"}"],{}]')
-    waitResponse(ws)
-    ws.send('[48,4326942052087000,{"receive_progress":false},"api.konfigd.get",["aa1a64a8-c8f7-08d5-3617-62a983044efb","exec alertsedit.pl --list --json"],{}]')
-    waitResponse(ws)
+    waitForResponse(ws, '[48,1622279444960334,{},"api.konfigd.auth",["f0369b56-ad01-e919-dfe6-9f0589d147f6","{\\"username\\":\\"'+ authId +'\\",\\"seal\\":\\"'+ seal +'\\"}"],{}]', True, 10, 2)
+    waitForResponse(ws, '[48,4326942052087000,{"receive_progress":false},"api.konfigd.get",["aa1a64a8-c8f7-08d5-3617-62a983044efb","exec alertsedit.pl --list --json"],{}]', True, 10, 2)
     return wsData
 
 temp.warningFiles = getFromConfig("warningFiles", "config.ini").replace(" ", "").split(",")
@@ -471,7 +539,7 @@ def workWithFiles(file, processName, _dir_with_tests):
             makeTestsDebugMode(file, _dir_with_tests)
         else: pass
         filename = logsFolderPath + temp.buildHash0 + file.replace(".py", "") + ".log"
-        if processName == "wsr":
+        if processName == "wst":
             os.system("python3 -m pytest " + file + " --seal=" + temp.seal.replace("|", "qweDelimqwe") + " " + commandLineLog + f" -s -q --alluredir={allureLogsFolderPath}{temp.buildHash0} | tee {logsFolderPath}{temp.buildHash0}" + file.replace(".py", "") + ".log && sed 's/\\\\r\\\\n/\\n/g' " + filename + " > " + filename + "O && mv " + filename + "O "+ filename +" &")
         else:
             def startRun():
@@ -483,7 +551,7 @@ def workWithFiles(file, processName, _dir_with_tests):
                 if "0 failed " not in process.decode("UTF-8") and "FAILED" in process.decode("UTF-8") and "PASSED" not in process.decode("UTF-8"):
                     arrayForFailedTests.append(file)
                     print(f"[-] Failed -> {file}")
-                else:
+                if "passed in " in process.decode("UTF-8"):
                     print(f"[+] Success -> {file}")
             thread0 = threading.Thread(target=startRun).start()
         # exitFunc()
@@ -521,18 +589,6 @@ def workWithFiles(file, processName, _dir_with_tests):
                         qwe = makeRequestsWithoutSSL(file, _dir_with_tests, ssl)
                 if "-db" in argument[debuglevelIndex] or "--debug-level" in argument[debuglevelIndex]:
                         makeTestsDebugMode(file, _dir_with_tests)
-                if "-s" in argument[skipIndex] or "--skip" in argument[skipIndex]:
-                    while True:
-                        if "," in argument[skipIndex + 1] or "." not in argument[skipIndex + 1]:
-                            for skipWay in skipWays:
-                                if skipWay in file:
-                                    skippedFiles.append(file)
-                                    break 
-                                else: pass
-                        if file in argument[skipIndex + 1]:
-                            logging.warning("Skip this test" + file)
-                            continue
-                        break
                 if temp.buildHash0 != "":
                     filename = logsFolderPath + "text_" +temp.buildHash0 + file.replace(".py", "") + ".log"
                 else:
@@ -540,7 +596,7 @@ def workWithFiles(file, processName, _dir_with_tests):
                 if file in skippedFiles:
                     continue
                 else:
-                    if processName == "wsr":
+                    if processName == "wst":
                         os.system("python3 -m pytest " + file + " --seal=" + temp.seal.replace("|", "qweDelimqwe") + " " + commandLineLog + f" -s -q --alluredir={allureLogsFolderPath}{temp.buildHash0} | tee {logsFolderPath}{temp.buildHash0}" + file.replace(".py", "") + ".log && sed 's/\\\\r\\\\n/\\n/g' " + filename + " > " + filename + "O && mv " + filename + "O "+ filename +" &")
                     else:
                         def startRun():
@@ -551,7 +607,7 @@ def workWithFiles(file, processName, _dir_with_tests):
                             if "0 failed " not in process.decode("UTF-8") and "FAILED" in process.decode("UTF-8") and "PASSED" not in process.decode("UTF-8"):
                                 arrayForFailedTests.append(file)
                                 print(f"[-] Failed -> {file}")
-                            else:
+                            if "passed in " in process.decode("UTF-8"):
                                 logging.info(f"[+] Success -> {file}")
                         thread0 = threading.Thread(target=startRun).start()
         else: pass
@@ -562,16 +618,25 @@ def workWithFiles(file, processName, _dir_with_tests):
             
 threads = []
 def runTests(_dir_with_tests, folderWT, _is_socket_open = 0):
-    for test in folderWT:
-        if "skip_" in test:
-            folderWT.remove(test)
+    folderWT00 = []
+    if "-s" in argument[skipIndex] or "--skip" in argument[skipIndex]:
+        for test in folderWT:
+            for arg in argument[skipIndex+1].split(","):
+                if arg in test:
+                    folderWT00.append(test)
+    for tests in folderWT00:
+        folderWT.remove(tests)
     processCounter = 0
     os.chdir(_dir_with_tests)
     if _is_socket_open == 1:
         interlayer()
         for file in folderWT:
-            threads.append("wsr")
-            workWithFiles(file, "wsr", _dir_with_tests)
+            threads.append("wst")
+            checkRunning = subprocess.Popen(['ps', 'aux'], stdout=subprocess.PIPE).communicate()[0]
+            new_ps = str(checkRunning).replace("\n", "")
+            if "killingProcess.py" not in str(new_ps):
+                threading.Thread(target=killingMachine, args=("KillingProcess",)).start()
+            workWithFiles(file, "wst", _dir_with_tests)
     else:
         restAuth()
         for file in folderWT:
@@ -580,11 +645,25 @@ def runTests(_dir_with_tests, folderWT, _is_socket_open = 0):
                     time.sleep(0.1)
                     pass
                 else:
+                    checkRunning = subprocess.Popen(['ps', 'aux'], stdout=subprocess.PIPE).communicate()[0]
+                    new_ps = str(checkRunning).replace("\n", "")
+                    if "killingProcess.py" not in str(new_ps):
+                        threading.Thread(target=killingMachine, args=("KillingProcess",)).start()
                     processCounter += 1
                     threads.append(f"Thread {processCounter}")
                     threading.Thread(workWithFiles(file, f"Thread {processCounter}", _dir_with_tests), name=f"Thread {processCounter}").start()
-                    time.sleep(int(timeoutInSec))
+                    time.sleep(float(timeoutInSec))
                     break
+
+def killingMachine(name):
+    if name == "KillingProcessRest":
+        path = os.path.abspath(__file__).replace(os.path.abspath(__file__).split("/")[-1], "support/killingProcess.py")
+    else:
+        path = os.path.abspath(__file__).replace(os.path.abspath(__file__).split("/")[-1], "../../support/killingProcess.py")
+    ps = subprocess.Popen(["python3", str(path), str(int(processKillingTime))], stdout=subprocess.PIPE).communicate()[0]
+killingThread = threading.Thread(target=killingMachine, args=("KillingProcessRest",))
+if processKillingTime != 0:
+    killingThread.start()   
 
 if len(desicion) == 0:
     runTests(folderDir, folderWithTests, 1)

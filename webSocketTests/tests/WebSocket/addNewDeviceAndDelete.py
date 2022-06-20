@@ -2,7 +2,7 @@ import sys
 sys.path.append('../../imports/')
 
 from connect import auth
-from waiter import waitResponse
+from waiter import waitForResponse
 import pytest
 import logging
 import allure
@@ -10,13 +10,10 @@ import requests
 
 @allure.step('Deleting machine from Tree')
 def deleteDeviceFromTreeList(ws, seal,authId, newtestmachine, host):
-    ws.send(r'[48,1622279444960334,{},"api.konfigd.auth",["f0369b56-ad01-e919-dfe6-9f0589d147f6","{\"username\":\"'+ authId + r'\",\"seal\":\"'+ seal + r'\"}"],{}]')
-    waitResponse(ws)
+    waitForResponse(ws, r'[48,1622279444960334,{},"api.konfigd.auth",["f0369b56-ad01-e919-dfe6-9f0589d147f6","{\"username\":\"'+ authId + r'\",\"seal\":\"'+ seal + r'\"}"],{}]')
     new_testmachine = str(newtestmachine).replace("-", "_")
     logging.info(f'Deleting {new_testmachine} from Tree') 
-    ws.send('[48,3179904544707732,{"receive_progress":false},"api.konfigd.set",["0ca486f1-6888-f1cd-38ac-b0b981f667a3","exec konfne DEMOLISH /Tree/' + new_testmachine + ' --json"],{}]')
-    message = waitResponse(ws, "DEMOLISHING")
-    assert "nassigned" in message or "DEMOLISHING:" in message, "Cannot delete test machine"
+    message = waitForResponse(ws, '[48,3179904544707732,{"receive_progress":false},"api.konfigd.set",["0ca486f1-6888-f1cd-38ac-b0b981f667a3","exec konfne DEMOLISH /Tree/' + new_testmachine + ' --json"],{}]')
     checkAlreadyUsedNames(ws, seal,authId, newtestmachine, host, temp=0)
 
 
@@ -39,11 +36,8 @@ def addingNewMachine(ws, seal, authId, host, machine):
     machineOs = machine[0].replace("device=", "")
     machineName = machine[1].replace("ip=", "")
     new_testmachine = str(machineName).replace("-", "_")
-    ws.send(r'[48,1622279444960334,{},"api.konfigd.auth",["f0369b56-ad01-e919-dfe6-9f0589d147f6","{\"username\":\"'+ authId + r'\",\"seal\":\"'+ seal + r'\"}"],{}]')
-    message = waitResponse(ws)
-    ws.send('[48,6152715661537792,{"receive_progress":false},"api.konfigd.get",["08593f34-0d7c-39fd-7eae-cef72dd3cabc","exec konfne params --json ' + machine[0].replace("device=", "") + r'"],{}]')
-    message = waitResponse(ws)
-    assert "08593f34-0d7c-39fd-7eae-cef72dd3cabc" in message, "qwe"
+    waitForResponse(ws, r'[48,1622279444960334,{},"api.konfigd.auth",["f0369b56-ad01-e919-dfe6-9f0589d147f6","{\"username\":\"'+ authId + r'\",\"seal\":\"'+ seal + r'\"}"],{}]')
+    waitForResponse(ws, r'[48,6152715661537792,{"receive_progress":false},"api.konfigd.get",["08593f34-0d7c-39fd-7eae-cef72dd3cabc","exec konfne params --json ' + machine[0].replace("device=", "") + r'"],{}]')
     query = r'[48,2587343106998326,{"receive_progress":true},"api.konfigd.set",["3efe5182-0f28-ca6b-aa40-0737e8f1409b","exec konfne --device ' + machine[0].replace("device=", "") + r'  --tag \"ip=' + machine[1].replace("ip=", "") + r'\" '
     for elem in machine:
         if "device" not in elem and "ip" not in elem and elem != "":
@@ -51,8 +45,7 @@ def addingNewMachine(ws, seal, authId, host, machine):
             if "community=" in elem:
                 query += " --fetchname "
     query+=r' add /Tree/' + new_testmachine + r' --json"],{}]'
-    ws.send(query)
-    message = waitResponse(ws, "3efe5182-0f28-ca6b-aa40-0737e8f1409b")
+    waitForResponse(ws, query)
 
 @allure.title('Adding new device to Tree')
 @allure.description("The test tests the functions of creating, deleting test PC")
@@ -74,3 +67,4 @@ def test_workWithDevices(seal):
             checkAlreadyUsedNames(ws, seal,authId, machineName, host, temp=0)
             addingNewMachine(ws, seal, authId, host, machine)
             deleteDeviceFromTreeList(ws, seal,authId, machineName, host)
+            ws.close()

@@ -9,13 +9,10 @@ import allure
 
 @allure.step('Deleting machine from Tree')
 def deleteDeviceFromTreeList(ws, seal,authId, newtestmachine, host):
-    ws.send(r'[48,1622279444960334,{},"api.konfigd.auth",["f0369b56-ad01-e919-dfe6-9f0589d147f6","{\"username\":\"'+ authId + r'\",\"seal\":\"'+ seal + r'\"}"],{}]')
-    waitResponse(ws)
+    waitForResponse(ws, r'[48,1622279444960334,{},"api.konfigd.auth",["f0369b56-ad01-e919-dfe6-9f0589d147f6","{\"username\":\"'+ authId + r'\",\"seal\":\"'+ seal + r'\"}"],{}]')
     new_testmachine = str(newtestmachine).replace("-", "_")
     logging.info(f'Deleting {new_testmachine} from Tree') 
-    ws.send('[48,3179904544707732,{"receive_progress":false},"api.konfigd.set",["0ca486f1-6888-f1cd-38ac-b0b981f667a3","exec konfne DEMOLISH /Tree/' + new_testmachine + ' --json"],{}]')
-    message = waitResponse(ws, "0ca486f1-6888-f1cd-38ac-b0b981f667a3")
-    assert "nassigned" in message or "DEMOLISHING:" in message or "DEMOLISH" in message, "Cannot delete test machine"
+    message = waitForResponse(ws, '[48,3179904544707732,{"receive_progress":false},"api.konfigd.set",["0ca486f1-6888-f1cd-38ac-b0b981f667a3","exec konfne DEMOLISH /Tree/' + new_testmachine + ' --json"],{}]')
     checkAlreadyUsedNames(ws, seal,authId, newtestmachine, host, temp=0)
 
 
@@ -38,10 +35,8 @@ def addingNewMachine(ws, seal, authId, host, machine):
     machineOs = machine[0].replace("device=", "")
     machineName = machine[1].replace("ip=", "")
     new_testmachine = str(machineName).replace("-", "_")
-    ws.send('[48,1622279444960334,{},"api.konfigd.auth",["f0369b56-ad01-e919-dfe6-9f0589d147f6","{\\"username\\":\\"'+ authId +'\\",\\"seal\\":\\"'+ seal +'\\"}"],{}]')
-    waitResponse(ws)
-    ws.send('[48,6152715661537792,{"receive_progress":false},"api.konfigd.get",["08593f34-0d7c-39fd-7eae-cef72dd3cabc","exec konfne params --json ' + machine[0].replace("device=", "") + r'"],{}]')
-    waitResponse(ws)
+    waitForResponse(ws, '[48,1622279444960334,{},"api.konfigd.auth",["f0369b56-ad01-e919-dfe6-9f0589d147f6","{\\"username\\":\\"'+ authId +'\\",\\"seal\\":\\"'+ seal +'\\"}"],{}]')
+    waitForResponse(ws, '[48,6152715661537792,{"receive_progress":false},"api.konfigd.get",["08593f34-0d7c-39fd-7eae-cef72dd3cabc","exec konfne params --json ' + machine[0].replace("device=", "") + r'"],{}]')
     query = r'[48,2587343106998326,{"receive_progress":true},"api.konfigd.set",["3efe5182-0f28-ca6b-aa40-0737e8f1409b","exec konfne --device ' + machine[0].replace("device=", "") + r'  --tag \"ip=' + machine[1].replace("ip=", "") + r'\" '
     for elem in machine:
         if "device" not in elem and "ip" not in elem:
@@ -49,26 +44,18 @@ def addingNewMachine(ws, seal, authId, host, machine):
             if "community=" in elem:
                 query += " --fetchname "
     query+=r' add /Tree/' + new_testmachine + r' --json"],{}]'
-    # logging.info(query)
-    ws.send(query)
-    # ws.send(r'[48,2194477590250782,{"receive_progress":true},"api.konfigd.set",["d40ab562-8665-3047-6742-846addec2079","exec konfne --device ' + machineOs + r'  --tag \"ip=' + machineName + r'\" --tag \"community=public\" --fetchname --tag \"enable-disk-io=false\" --tag \"enable-disks-changes=false\" --tag \"split-cpu-by-units=false\" --tag \"enable-hardware-changes=false\" --tag \"enable-process-changes=false\" --tag \"enable-software-changes=false\" --tag \"enable-arp-changes=false\" --tag \"enable-network-changes=false\" --tag \"enable-icmp-changes=false\" --tag \"enable-tcp-changes=false\" --tag \"enable-udp-changes=false\"   --tag \"replicated=false\" add /Tree/' + new_testmachine + r' --json"],{}]')
-    # waitResponse(ws)
+    waitForResponse(ws, query)
     checkAlreadyUsedNames(ws, seal, authId, machineName, host, temp=1)
 
 @allure.step('Connect all new signals from list to test machine')
 def addingAllSignalForMachine(ws, machineName, host, seal, authId):
     machineName = machineName.replace("-", "_")
-    ws.send('[48,1622279444960334,{},"api.konfigd.auth",["f0369b56-ad01-e919-dfe6-9f0589d147f6","{\\"username\\":\\"'+ authId +'\\",\\"seal\\":\\"'+ seal +'\\"}"],{}]')
-    waitResponse(ws)
-    ws.send(r'[48,1548512487132856,{"receive_progress":false},"api.konfigd.set",["013fa016-30a3-3286-eb2c-25b565c9b17c","exec alertsedit.pl --templates=\"CiscoSanMDS,emc-dae,emc-disk,emc-dpe,emc-cpu,emc-lcc,emc-ps,esb-event,esb-process,diskIO,diskPart,cim-health,cisco-router,hpux-cpu,hpux-memory,hpux-storage,gawain-gauge,generic-printer-toner,generic-printer-status,IN_TEST,LinuxProcess,netflow,lancelot-alerts,lancelot-fifo,lancelot-fnmp,lancelot-kollector,lancelot-rest,linux-cpu-core-info,lnx-cpu,lnx-memory,lnx-memory-sg,lnx-storage,lnx-storage-test,OUT_TEST,qwe,prisma-app-status,prisma-fan-status,prisma-enc-status,prisma-eth-status,prisma-temp-sensor,prisma-ser-status,process-run-table,Test,test-labels,test-template-2,TEST_FOR_POSTMAN,TEST_SIGNAL_WITH_UNIQUE_NAME,traffic,traffic64,saa-router-rtt-icmp-ping,saa-router-rtt-http-get,saa-router-voip-jitter,sun-cpu,sun-memory,sun-storage,windows-cpu,windows-memory,windows-service,windows-storage,winnt-cpu,winnt-memory,winnt-storage\" assign /Tree/' + machineName + r' --json"],{}]')
-    # ws.recv()
-    logging.info("Sending request to connect all signals from list")
-    message = waitResponse(ws)
-    assert "data" in message and "was named " + machineName, 'Something wrong with webSocket request!'
-    # getCheckingSignalsOnMachine = requests.get(f'http://{host}/rest/tree/node?username={authId}&seal={seal}&with_alerts=1&filter_tags=0&path=/Tree/{machineName}').text
-    message = waitGetResponseToBeChanged(f'http://{host}/rest/tree/node?username={authId}&seal={seal}&with_alerts=1&filter_tags=0&path=/Tree/{machineName}', "traffic")
+    waitForResponse(ws, '[48,1622279444960334,{},"api.konfigd.auth",["f0369b56-ad01-e919-dfe6-9f0589d147f6","{\\"username\\":\\"'+ authId +'\\",\\"seal\\":\\"'+ seal +'\\"}"],{}]')
+    waitForResponse(ws, '[48,8370770664346762,{"receive_progress":false},"api.konfigd.get",["862d7371-5bcb-edf3-e300-b07da12e9c33","exec alertsedit.pl --list-lic --json /Tree/' + machineName + r'"],{}]')
+    waitForResponse(ws, '[48,3924402765767258,{"receive_progress":false},"api.konfigd.set",["600fe80c-6984-ae5b-9501-793919b47fca","exec alertsedit.pl --templates=\\"CiscoSanMDS,emc-dae,emc-disk,emc-dpe,emc-cpu,emc-lcc,emc-ps,esb-event,esb-process,diskIO,cim-health,cisco-router,hpux-cpu,hpux-memory,hpux-storage,gawain-gauge,generic-printer-toner,generic-printer-status,LinuxProcess,netflow,lancelot-alerts,lancelot-fifo,lancelot-fnmp,lancelot-kollector,lancelot-rest,linux-cpu-core-info,lnx-cpu,lnx-memory,lnx-storage,prisma-app-status,prisma-fan-status,prisma-enc-status,prisma-eth-status,prisma-temp-sensor,prisma-ser-status,process-run-table,traffic,traffic64,saa-router-rtt-icmp-ping,saa-router-rtt-http-get,saa-router-voip-jitter,sun-cpu,sun-memory,sun-storage,windows-cpu,windows-memory,windows-service,windows-storage,winnt-cpu,winnt-memory,winnt-storage\\" assign /Tree/' + machineName + r' --json"],{}]', True, 20, 10)
+    getCheckingSignalsOnMachine = waitGetResponse(f'http://{host}/rest/tree/node?username={authId}&seal={seal}&with_alerts=1&filter_tags=0&path=/Tree/{machineName}')
+    message = waitGetResponse(f'http://{host}/rest/tree/node?username={authId}&seal={seal}&with_alerts=1&filter_tags=0&path=/Tree/{machineName}')
     logging.info("Check signals on machine")
-    assert '"alert-template":"traffic' in message, "The signals are not connected!"
     logging.info("Signals connected!")
 
 
@@ -93,3 +80,4 @@ def test_workWithSignals(seal):
             addingNewMachine(ws, seal, authId, host, machine)
             addingAllSignalForMachine(ws, machineName, host, seal, authId)
             deleteDeviceFromTreeList(ws, seal,authId, machineName, host)
+            ws.close()
