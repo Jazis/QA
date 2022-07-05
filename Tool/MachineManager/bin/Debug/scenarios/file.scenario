@@ -1,0 +1,9 @@
+<id>1</id>
+	<action>Service status</action>
+	<parameters>123</parameters>
+<id>2</id>
+	<action>Manual</action>
+	<parameters>123</parameters>
+<id>3</id>
+	<action>File upload</action>
+	<parameters>123</parameters>
