@@ -1,0 +1,182 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "oneOf": [
+      {
+        "type": "object",
+        "properties": {
+          "count": { "type": "integer" },
+          "next": { "type": ["string", "null"], "format": "uri" },
+          "previous": { "type": ["string", "null"], "format": "uri" },
+          "results": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": { "type": "integer" },
+                "referee_name": { "type": "string" },
+                "status": { "type": "string" },
+                "started_at": { "type": "string", "format": "date-time" },
+                "ended_at": { "type": ["string", "null"], "format": "date-time" },
+                "paid_at": { "type": "string", "format": "date-time" },
+                "referrer_reward": { "type": "number" },
+                "referee_reward": { "type": "number" }
+              },
+              "required": ["id", "referee_name", "status", "started_at", "paid_at", "referrer_reward", "referee_reward"]
+            }
+          }
+        },
+        "required": ["count", "results"]
+      },
+      {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "id": { "type": "integer" },
+            "name": { "type": "string" }
+          },
+          "required": ["id", "name"]
+        }
+      },
+      {
+        "type": "object",
+        "properties": {
+          "referral_code": { "type": "string" },
+          "referral_program": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "integer" },
+              "name": { "type": "string" },
+              "description": { "type": "string" },
+              "period": { "type": "integer" },
+              "goal": { "type": "number" },
+              "referrer_reward": { "type": "number" },
+              "referee_reward": { "type": "number" }
+            },
+            "required": ["id", "name", "description", "period", "goal", "referrer_reward", "referee_reward"]
+          }
+        },
+        "required": ["referral_code", "referral_program"]
+      },
+      {
+        "type": "object",
+        "properties": {
+          "count": { "type": "integer" },
+          "next": { "type": ["string", "null"], "format": "uri" },
+          "previous": { "type": ["string", "null"], "format": "uri" },
+          "results": {
+            "type": "object",
+            "properties": {
+              "total_sum": {
+                "type": "object",
+                "properties": {
+                  "spend": { "type": "number" },
+                  "settled": { "type": "number" },
+                  "pending": { "type": "number" },
+                  "refund": { "type": "number" },
+                  "reversed_amount": { "type": "number" },
+                  "fx_fee": { "type": "number" },
+                  "cross_border_fee": { "type": "number" },
+                  "decline_fee": { "type": "number" }
+                },
+                "required": [
+                  "spend", "settled", "pending", "refund",
+                  "reversed_amount", "fx_fee", "cross_border_fee", "decline_fee"
+                ]
+              },
+              "data": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": { "type": "integer" },
+                    "amount": { "type": "number" },
+                    "authorize_time": { "type": "string", "format": "date-time" },
+                    "card": {
+                      "type": "object",
+                      "properties": {
+                        "id": { "type": "integer" },
+                        "name": { "type": "string" },
+                        "number": { "type": "string" },
+                        "user": {
+                          "type": "object",
+                          "properties": {
+                            "id": { "type": "integer" },
+                            "email": { "type": "string", "format": "email" },
+                            "person": {
+                              "type": "object",
+                              "properties": {
+                                "first_name": { "type": "string" },
+                                "last_name": { "type": "string" }
+                              },
+                              "required": ["first_name", "last_name"]
+                            }
+                          },
+                          "required": ["id", "email", "person"]
+                        },
+                        "payment_system": { "type": "string" }
+                      },
+                      "required": ["id", "name", "number", "user", "payment_system"]
+                    },
+                    "country": {
+                      "type": "object",
+                      "properties": {
+                        "id": { "type": "integer" },
+                        "name": { "type": "string" },
+                        "code": { "type": "string" }
+                      },
+                      "required": ["id", "name", "code"]
+                    },
+                    "cross_border_fee": { "type": "number" },
+                    "currency": { "type": "string" },
+                    "decline_fee": { "type": "number" },
+                    "decline_reason": { "type": ["string", "null"] },
+                    "description": { "type": "string" },
+                    "direction": { "type": "string" },
+                    "fx_fee": { "type": "number" },
+                    "local_amount": { "type": "number" },
+                    "mcc": { "type": "string" },
+                    "merchant_info": { "type": "string" },
+                    "merchant_image": { "type": "string", "format": "uri" },
+                    "merchant_name": { "type": "string" },
+                    "refund_time": { "type": ["string", "null"], "format": "date-time" },
+                    "reversed_time": { "type": ["string", "null"], "format": "date-time" },
+                    "settled_time": { "type": ["string", "null"], "format": "date-time" },
+                    "status": { "type": "string" },
+                    "total": { "type": "number" },
+                    "user": {
+                      "type": "object",
+                      "properties": {
+                        "id": { "type": "integer" },
+                        "email": { "type": "string", "format": "email" },
+                        "person": {
+                          "type": "object",
+                          "properties": {
+                            "first_name": { "type": "string" },
+                            "last_name": { "type": "string" }
+                          },
+                          "required": ["first_name", "last_name"]
+                        }
+                      },
+                      "required": ["id", "email", "person"]
+                    }
+                  },
+                  "required": [
+                    "id", "amount", "authorize_time", "card", "country",
+                    "cross_border_fee", "currency", "decline_fee", "decline_reason",
+                    "description", "direction", "fx_fee", "local_amount", "mcc",
+                    "merchant_info", "merchant_image", "merchant_name",
+                    "refund_time", "reversed_time", "settled_time", "status",
+                    "total", "user"
+                  ]
+                }
+              }
+            },
+            "required": ["total_sum", "data"]
+          }
+        },
+        "required": ["count", "next", "previous", "results"]
+      }
+    ]
+  }
+  

@@ -1,0 +1,56 @@
+{
+    "count": 0,
+    "next": null,
+    "previous": null,
+    "results": {
+      "total_sum": {
+        "settled": 0.0,
+        "pending": 0.0,
+        "refund": 0.0,
+        "reversed_amount": 0.0,
+        "fx_fee": 0.0,
+        "cross_border_fee": 0.0,
+        "decline_fee": 0.0,
+        "spend": 0.0
+      },
+      "total_decline_rate": 0.0,
+      "total_decline_amount": 0.0,
+      "international": 0.0,
+      "data": [
+        {
+          "id": 0,
+          "username": "",
+          "person": {
+            "first_name": "",
+            "last_name": "",
+            "status": 0,
+            "role": 0,
+            "role_name": "",
+            "is_owner": false,
+            "limit": {
+              "id": 0,
+              "name": "",
+              "days": 0,
+              "start_at": ""
+            },
+            "limit_amount": 0,
+            "limit_spend": null
+          },
+          "company": 0,
+          "settled": 0.0,
+          "pending": 0.0,
+          "refund": 0.0,
+          "reversed_amount": 0.0,
+          "fx_fee": 0.0,
+          "cross_border_fee": 0.0,
+          "decline_fee": 0.0,
+          "spend": 0.0,
+          "decline_rate": 0.0,
+          "decline_amount": 0.0,
+          "international": 0.0,
+          "avatar": null
+        }
+      ]
+    }
+  }
+  

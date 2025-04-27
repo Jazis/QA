@@ -1,0 +1,91 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+      "id": { "type": "integer" },
+      "created_at": { "type": "string", "format": "date-time" },
+      "name": { "type": "string" },
+      "cards_quantity_limit": { "type": "integer" },
+      "use_decline_fee": { "type": "boolean" },
+      "critical_balance": { "type": "number" },
+      "activated_at": { "type": "string", "format": "date-time", "nullable": true },
+      "disabled_at": { "type": "string", "format": "date-time", "nullable": true },
+      "subscription": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer" },
+          "plan": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "integer" },
+              "name": { "type": "string" },
+              "code": { "type": "string" },
+              "default": { "type": "boolean" },
+              "price": { "type": "string" },
+              "period": { "type": "string" },
+              "tariff": {
+                "type": "object",
+                "properties": {
+                  "id": { "type": "integer" },
+                  "name": { "type": "string" },
+                  "code": { "type": "string" },
+                  "crypto_topup_fee": { "type": "number" },
+                  "wire_topup_fee": { "type": "number" },
+                  "available_bins_count": { "type": "integer" },
+                  "is_international_bins": { "type": "boolean" },
+                  "is_free_cards": { "type": "boolean" }
+                },
+                "required": [
+                  "id",
+                  "name",
+                  "code",
+                  "crypto_topup_fee",
+                  "wire_topup_fee",
+                  "available_bins_count",
+                  "is_international_bins",
+                  "is_free_cards"
+                ]
+              }
+            },
+            "required": ["id", "name", "code", "default", "price", "period", "tariff"]
+          },
+          "status": { "type": "string" },
+          "started_at": { "type": "string", "format": "date-time" },
+          "expires_at": { "type": "string", "format": "date-time" },
+          "ended_at": { "type": "string", "format": "date-time", "nullable": true }
+        },
+        "required": ["id", "plan", "status", "started_at", "expires_at", "ended_at"]
+      },
+      "wallet_addresses": {
+        "type": "array",
+        "items": { "type": "string" }
+      },
+      "status": { "type": "string" },
+      "owner_type": { "type": "string" },
+      "provider": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer" },
+          "name": { "type": "string" },
+          "stage": { "type": ["string", "null"] }
+        },
+        "required": ["id", "name", "stage"]
+      }
+    },
+    "required": [
+      "id",
+      "created_at",
+      "name",
+      "cards_quantity_limit",
+      "use_decline_fee",
+      "critical_balance",
+      "activated_at",
+      "disabled_at",
+      "subscription",
+      "wallet_addresses",
+      "status",
+      "owner_type",
+      "provider"
+    ]
+  }
+  

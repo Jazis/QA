@@ -1,0 +1,47 @@
+{
+  "type": "object",
+  "properties": {
+    "intervals": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "index": {
+            "type": "integer"
+          },
+          "date": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "available_balance": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "index",
+          "date",
+          "available_balance"
+        ]
+      }
+    },
+    "current": {
+      "type": "object",
+      "properties": {
+        "available_balance": {
+          "type": "number"
+        },
+        "pending": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "available_balance",
+        "pending"
+      ]
+    }
+  },
+  "required": [
+    "intervals",
+    "current"
+  ]
+}

@@ -1,0 +1,6 @@
+
+SETTINGS = [
+    {
+        'test_settings'
+    }
+]

@@ -1,0 +1,238 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "oneOf": [
+    {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer"
+          },
+          "paid_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "type": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "amount": {
+            "type": "number"
+          },
+          "status": {
+            "type": "string"
+          }
+        },
+        "required": ["id", "paid_at", "type", "description", "amount", "status"]
+      }
+    },
+    {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "text": {
+            "type": "string"
+          },
+          "features": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "is_available": {
+                  "type": "boolean"
+                },
+                "value": {
+                  "type": ["string", "null"]
+                },
+                "is_default": {
+                  "type": "boolean"
+                }
+              },
+              "required": ["name", "is_available", "value", "is_default"]
+            }
+          },
+          "is_current": {
+            "type": "boolean"
+          },
+          "prices": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "amount": {
+                  "type": "number"
+                },
+                "period": {
+                  "type": "string"
+                }
+              },
+              "required": ["amount", "period"]
+            }
+          }
+        },
+        "required": ["name", "text", "features", "is_current", "prices"]
+      }
+    },
+    {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "is_active": {
+          "type": "boolean"
+        },
+        "features": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "is_available": {
+                "type": "boolean"
+              },
+              "value": {
+                "type": ["string", "null"]
+              },
+              "is_default": {
+                "type": "boolean"
+              }
+            },
+            "required": ["name", "is_available", "value", "is_default"]
+          }
+        },
+        "next_payment": {
+          "type": ["string", "null"]
+        },
+        "price": {
+          "type": "object",
+          "properties": {
+            "amount": {
+              "type": "number"
+            },
+            "period": {
+              "type": "string"
+            }
+          },
+          "required": ["amount", "period"]
+        }
+      },
+      "required": ["name", "status", "is_active", "features", "next_payment", "price"]
+    },
+    {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "first_name": {
+          "type": "string"
+        },
+        "last_name": {
+          "type": "string"
+        },
+        "locale": {
+          "type": "string"
+        },
+        "avatar": {
+          "type": ["string", "null"]
+        },
+        "timezone": {
+          "type": "string"
+        },
+        "theme": {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string"
+            }
+          },
+          "required": ["type"]
+        }
+      },
+      "required": ["email", "first_name", "last_name", "locale", "avatar", "timezone", "theme"]
+    },
+    {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "card_bin": {
+            "type": "string"
+          },
+          "currency": {
+            "type": "string"
+          },
+          "country": {
+            "type": "string"
+          },
+          "is_global": {
+            "type": "boolean"
+          },
+          "c3ds_enabled": {
+            "type": "boolean"
+          },
+          "type": {
+            "type": "string"
+          },
+          "payment_system": {
+            "type": "string"
+          },
+          "payment_system_name": {
+            "type": "string"
+          },
+          "segment": {
+            "type": ["string", "null"]
+          },
+          "segment_name": {
+            "type": ["string", "null"]
+          },
+          "category": {
+            "type": "string"
+          },
+          "fx_fee_percentage": {
+            "type": "number"
+          },
+          "fx_fee_const": {
+            "type": "number"
+          },
+          "cross_border_fee_percentage": {
+            "type": "number"
+          },
+          "cross_border_fee_const": {
+            "type": "number"
+          }
+        },
+        "required": ["card_bin", "currency", "country", "is_global", "c3ds_enabled", "type", "payment_system", "payment_system_name", "segment", "segment_name", "category", "fx_fee_percentage", "fx_fee_const", "cross_border_fee_percentage", "cross_border_fee_const"]
+      }
+    },
+    {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "avatar": {
+          "type": ["string", "null"]
+        }
+      },
+      "required": ["name", "avatar"]
+    }
+  ]
+ }
+ 
